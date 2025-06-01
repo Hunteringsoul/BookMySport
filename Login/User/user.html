@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sports Venue Booking System - User</title>
+    <link rel="stylesheet" href="user.css">
+</head>
+<body>
+    <!-- Login Page -->
+    <div id="loginPage" class="login-page">
+        <div class="login-form">
+            <h2>Sports Venue Booking System</h2>
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input type="text" id="username" placeholder="Enter username">
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" placeholder="Enter password">
+            </div>
+            <button id="loginButton">Login</button>
+            <button id="Sign Up">Sign Up</button>
+            <p style="margin-top: 1rem; color: #777; font-size: 0.9rem;">
+                <strong>User access:</strong> username: user, password: user
+            </p>
+        </div>
+    </div>
+
+    <!-- User Page -->
+    <div id="userPage" class="page" style="display: none;">
+        <div class="navbar">
+            <h1>Sports Venue Booking System</h1>
+            <div class="nav-tabs">
+                <div id="logoutTabUser" class="nav-tab">Logout</div>
+            </div>
+        </div>
+        
+        <div class="container">
+            <div class="card">
+                <h2>Book a Sports Venue</h2>
+                <form id="bookingForm">
+                    <div class="form-group">
+                        <label for="name">Your Name</label>
+                        <input type="text" id="name" required placeholder="Enter your full name">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="sport">Sport Type</label>
+                        <select id="sport" required>
+                            <option value="">Select a sport</option>
+                            <option value="Basketball">Basketball</option>
+                            <option value="Football">Football</option>
+                            <option value="Tennis">Tennis</option>
+                            <option value="Swimming">Swimming</option>
+                            <option value="Volleyball">Volleyball</option>
+                            <option value="Badminton">Badminton</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="venue">Venue</label>
+                        <select id="venue" required>
+                            <option value="">Select a venue</option>
+                            <option value="City Stadium">City Stadium</option>
+                            <option value="Community Center">Community Center</option>
+                            <option value="Sports Complex">Sports Complex</option>
+                            <option value="University Grounds">University Grounds</option>
+                            <option value="Beach Courts">Beach Courts</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="date">Date</label>
+                        <input type="date" id="date" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="time">Time Slot</label>
+                        <select id="time" required>
+                            <option value="">Select a time slot</option>
+                            <option value="08:00 - 09:00">08:00 - 09:00</option>
+                            <option value="09:00 - 10:00">09:00 - 10:00</option>
+                            <option value="10:00 - 11:00">10:00 - 11:00</option>
+                            <option value="11:00 - 12:00">11:00 - 12:00</option>
+                            <option value="13:00 - 14:00">13:00 - 14:00</option>
+                            <option value="14:00 - 15:00">14:00 - 15:00</option>
+                            <option value="15:00 - 16:00">15:00 - 16:00</option>
+                            <option value="16:00 - 17:00">16:00 - 17:00</option>
+                            <option value="17:00 - 18:00">17:00 - 18:00</option>
+                            <option value="18:00 - 19:00">18:00 - 19:00</option>
+                            <option value="19:00 - 20:00">19:00 - 20:00</option>
+                        </select>
+                    </div>
+                    
+                    <button type="submit">Confirm Booking</button>
+                </form>
+                
+                <div class="success-message" id="successMessage">
+                    <h3>Booking Confirmed!</h3>
+                    <p>Your sports venue has been successfully booked.</p>
+                    <button id="newBookingBtn" class="success">Make Another Booking</button>
+                </div>
+            </div>
+            
+            <div class="card">
+                <h2>My Bookings</h2>
+                <div id="userBookingsTable">
+                    <!-- User's bookings will be displayed here -->
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="../../dbms.js"></script>
+    <script src="user.js"></script>
+</body>
+</html>
