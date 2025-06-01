@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sports Venue Booking System - Admin</title>
+    <link rel="stylesheet" href="admin.css">
+</head>
+<body>
+    <!-- Login Page -->
+    <div id="loginPage" class="login-page">
+        <div class="login-form">
+            <h2>Sports Venue Booking System - Admin Access</h2>
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input type="text" id="username" placeholder="Enter username">
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" placeholder="Enter password">
+            </div>
+            <button id="loginButton">Login</button>
+            <p style="margin-top: 1rem; color: #777; font-size: 0.9rem;">
+                <strong>Admin access:</strong> username: admin, password: admin
+            </p>
+        </div>
+    </div>
+    
+    <!-- Admin Page -->
+    <div id="adminPage" class="page" style="display: none;">
+        <div class="navbar">
+            <h1>Sports Venue Booking System - Admin Console</h1>
+            <div class="nav-tabs">
+                <div id="logoutTabAdmin" class="nav-tab">Logout</div>
+            </div>
+        </div>
+        
+        <div class="container">
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-value" id="totalBookings">0</div>
+                    <div class="stat-label">Total Bookings</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="todayBookings">0</div>
+                    <div class="stat-label">Today's Bookings</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="upcomingBookings">0</div>
+                    <div class="stat-label">Upcoming Bookings</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="mostPopularVenue">-</div>
+                    <div class="stat-label">Most Popular Venue</div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <h2>All Bookings</h2>
+                
+                <div class="admin-controls">
+                    <button id="exportJSON" class="success">Export Bookings (JSON)</button>
+                    <button id="clearDatabase" class="danger">Clear All Bookings</button>
+                </div>
+                
+                <div class="filters">
+                    <div class="form-group">
+                        <label for="filterVenue">Filter by Venue</label>
+                        <select id="filterVenue">
+                            <option value="">All Venues</option>
+                            <option value="City Stadium">City Stadium</option>
+                            <option value="Community Center">Community Center</option>
+                            <option value="Sports Complex">Sports Complex</option>
+                            <option value="University Grounds">University Grounds</option>
+                            <option value="Beach Courts">Beach Courts</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="filterSport">Filter by Sport</label>
+                        <select id="filterSport">
+                            <option value="">All Sports</option>
+                            <option value="Basketball">Basketball</option>
+                            <option value="Football">Football</option>
+                            <option value="Tennis">Tennis</option>
+                            <option value="Swimming">Swimming</option>
+                            <option value="Volleyball">Volleyball</option>
+                            <option value="Badminton">Badminton</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="filterDate">Filter by Date</label>
+                        <input type="date" id="filterDate">
+                    </div>
+                </div>
+                
+                <div id="adminBookingsTable">
+                    <!-- All bookings will be displayed here -->
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="../../dbms.js"></script>
+    <script src="admin.js"></script>
+</body>
+</html>
