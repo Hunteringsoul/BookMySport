@@ -5,7 +5,12 @@ document.addEventListener("DOMContentLoaded", async function () {
     if (token && isAdmin) {
         document.getElementById("loginPage").style.display = "none";
         document.getElementById("adminPage").style.display = "block";
-        displayAdminBookings();
+        
+        // Wait a moment for the page to fully load, then update
+        setTimeout(() => {
+            displayAdminBookings();
+            updateBookingStatistics();
+        }, 100);
     }
 });
 
@@ -23,24 +28,77 @@ document.getElementById("loginButton").addEventListener("click", function () {
     }
 });
 
-
 // Logout Handling
 document.getElementById("logoutTabAdmin").addEventListener("click", function () {
     localStorage.removeItem("token");
     localStorage.removeItem("isAdmin");
-    location.reload(); v
+    location.reload();
 });
+
+// Update Booking Statistics
+function updateBookingStatistics() {
+    const bookings = DB.getBookings();
+    console.log('Updating statistics with bookings:', bookings); // Debug log
+    
+    const today = new Date();
+    const todayString = today.toDateString();
+    
+    // Total bookings
+    const totalCount = bookings.length;
+    document.getElementById("totalBookings").textContent = totalCount;
+    console.log('Total bookings count:', totalCount); // Debug log
+    
+    // Today's bookings
+    const todayBookings = bookings.filter(booking => {
+        if (!booking.date) return false;
+        const bookingDate = new Date(booking.date);
+        return bookingDate.toDateString() === todayString;
+    });
+    document.getElementById("todayBookings").textContent = todayBookings.length;
+    console.log('Today bookings count:', todayBookings.length); // Debug log
+    
+    // Upcoming bookings (from today onwards)
+    const currentDate = new Date();
+    currentDate.setHours(0, 0, 0, 0); // Reset time to start of day
+    
+    const upcomingBookings = bookings.filter(booking => {
+        if (!booking.date) return false;
+        const bookingDate = new Date(booking.date);
+        bookingDate.setHours(0, 0, 0, 0);
+        return bookingDate >= currentDate;
+    });
+    document.getElementById("upcomingBookings").textContent = upcomingBookings.length;
+    console.log('Upcoming bookings count:', upcomingBookings.length); // Debug log
+    
+    // Most popular venue
+    if (bookings.length > 0) {
+        const venueCount = {};
+        bookings.forEach(booking => {
+            if (booking.venue) {
+                venueCount[booking.venue] = (venueCount[booking.venue] || 0) + 1;
+            }
+        });
+        
+        if (Object.keys(venueCount).length > 0) {
+            const mostPopular = Object.keys(venueCount).reduce((a, b) => 
+                venueCount[a] > venueCount[b] ? a : b
+            );
+            document.getElementById("mostPopularVenue").textContent = mostPopular;
+        } else {
+            document.getElementById("mostPopularVenue").textContent = "-";
+        }
+    } else {
+        document.getElementById("mostPopularVenue").textContent = "-";
+    }
+}
 
 // Display Admin Bookings
 async function displayAdminBookings() {
-    const token = localStorage.getItem("token");
-
-    const res = await fetch("http://localhost:5000/admin/bookings", {
-        headers: { Authorization: token },
-    });
-
-    const bookings = await res.json();
+    const bookings = DB.getBookings();
     const tableDiv = document.getElementById("adminBookingsTable");
+
+    // Always update statistics first
+    updateBookingStatistics();
 
     if (bookings.length === 0) {
         tableDiv.innerHTML = `<div class="no-bookings">No bookings found.</div>`;
@@ -52,13 +110,13 @@ async function displayAdminBookings() {
 
     bookings.forEach((booking) => {
         html += `<tr>
-            <td>${booking.username}</td>
-            <td>${booking.name}</td>
-            <td>${booking.sport}</td>
-            <td>${booking.venue}</td>
-            <td>${new Date(booking.date).toLocaleDateString()}</td>
-            <td>${booking.time}</td>
-            <td><button class="delete-btn" data-id="${booking._id}">Delete</button></td>
+            <td>${booking.username || 'N/A'}</td>
+            <td>${booking.name || 'N/A'}</td>
+            <td>${booking.sport || 'N/A'}</td>
+            <td>${booking.venue || 'N/A'}</td>
+            <td>${booking.date ? new Date(booking.date).toLocaleDateString() : 'N/A'}</td>
+            <td>${booking.time || 'N/A'}</td>
+            <td><button class="delete-btn" data-id="${booking.id || booking._id}">Delete</button></td>
         </tr>`;
     });
 
@@ -66,42 +124,34 @@ async function displayAdminBookings() {
     tableDiv.innerHTML = html;
 
     document.querySelectorAll(".delete-btn").forEach((button) => {
-        button.addEventListener("click", async function () {
+        button.addEventListener("click", function () {
             const id = this.dataset.id;
             if (confirm("Are you sure?")) {
-                await fetch(`http://localhost:5000/admin/bookings/${id}`, {
-                    method: "DELETE",
-                    headers: { Authorization: token },
-                });
-                displayAdminBookings();
+                DB.deleteBooking(id);
+                displayAdminBookings(); // This will also update statistics
             }
         });
     });
 }
 
 // Clear All Bookings
-document.getElementById("clearDatabase").addEventListener("click", async function () {
-    const token = localStorage.getItem("token");
-
+document.getElementById("clearDatabase").addEventListener("click", function () {
     if (confirm("Are you sure you want to delete ALL bookings? This cannot be undone.")) {
-        await fetch("http://localhost:5000/admin/bookings", {
-            method: "DELETE",
-            headers: { Authorization: token },
-        });
-        displayAdminBookings();
+        DB.clearAll();
+        displayAdminBookings(); // This will also update statistics
     }
 });
 
 // Export Bookings
-document.getElementById("exportJSON").addEventListener("click", async function () {
-    const token = localStorage.getItem("token");
+document.getElementById("exportJSON").addEventListener("click", function () {
+    const bookings = DB.getBookings();
 
-    const res = await fetch("http://localhost:5000/admin/export", {
-        headers: { Authorization: token },
-    });
+    if (bookings.length === 0) {
+        alert("No bookings available to export.");
+        return;
+    }
 
-    const data = await res.json();
-    const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(data, null, 2));
+    const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(bookings, null, 2));
     
     const downloadAnchorNode = document.createElement("a");
     downloadAnchorNode.setAttribute("href", dataStr);
@@ -110,3 +160,13 @@ document.getElementById("exportJSON").addEventListener("click", async function (
     downloadAnchorNode.click();
     downloadAnchorNode.remove();
 });
+
+// Add manual refresh function for debugging
+function manualRefresh() {
+    console.log('Manual refresh triggered');
+    updateBookingStatistics();
+    displayAdminBookings();
+}
+
+// You can call this from browser console: manualRefresh()
+window.manualRefresh = manualRefresh;
