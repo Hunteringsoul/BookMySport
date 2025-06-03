@@ -9,11 +9,26 @@ document.addEventListener("DOMContentLoaded", async function () {
     }
 });
 
+//Login Handling
+document.getElementById("loginButton").addEventListener("click", function () {
+    const username = document.getElementById("username").value.trim();
+    const password = document.getElementById("password").value.trim();
+
+    if (username === "admin" && password === "admin") {
+        localStorage.setItem("token", "admin-token");
+        localStorage.setItem("isAdmin", "true");
+        location.reload();
+    } else {
+        alert("Invalid username or password.");
+    }
+});
+
+
 // Logout Handling
 document.getElementById("logoutTabAdmin").addEventListener("click", function () {
     localStorage.removeItem("token");
     localStorage.removeItem("isAdmin");
-    location.reload();
+    location.reload(); v
 });
 
 // Display Admin Bookings
