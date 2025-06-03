@@ -22,6 +22,11 @@ const DB = {
         // Save back to localStorage
         localStorage.setItem('sportsbookings', JSON.stringify(bookings));
         
+        // Update statistics if the function exists (admin page)
+        if (typeof updateBookingStatistics === 'function') {
+            updateBookingStatistics();
+        }
+        
         return booking;
     },
     
@@ -42,11 +47,21 @@ const DB = {
         let bookings = this.getBookings();
         bookings = bookings.filter(booking => booking.id !== id);
         localStorage.setItem('sportsbookings', JSON.stringify(bookings));
+        
+        // Update statistics if the function exists (admin page)
+        if (typeof updateBookingStatistics === 'function') {
+            updateBookingStatistics();
+        }
     },
     
     // Clear all bookings
     clearAll: function() {
         localStorage.removeItem('sportsbookings');
+        
+        // Update statistics if the function exists (admin page)
+        if (typeof updateBookingStatistics === 'function') {
+            updateBookingStatistics();
+        }
     }
 };
 
